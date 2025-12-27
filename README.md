@@ -1,5 +1,6 @@
 <div align="center" markdown="1">
 
+
 ➡️ [Discord][discord] | [Installation Guide][toc-install] | [Usage Guide][usage-guide] ⬅️
 
 <img src="pictures/rustscan.png" height=400px width=400px>
