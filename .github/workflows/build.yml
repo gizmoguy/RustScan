@@ -54,6 +54,7 @@ jobs:
         with:
           executable-name: rustscan
           archive-name: ${{ matrix.name }}
+          changes-file: ""
       - name: Build tar.gz for homebrew installs
         if: matrix.type == 'ubuntu-x64'
         run: |
@@ -113,6 +114,7 @@ jobs:
         with:
           executable-name: rustscan
           archive-name: x86_64-macos-rustscan
+          changes-file: ""
       - name: Build tar.gz for homebrew installs
         run: |
           tar czf x86_64-macos-rustscan.tar.gz -C target/x86_64-apple-darwin/release rustscan
@@ -148,6 +150,7 @@ jobs:
         with:
           executable-name: rustscan
           archive-name: aarch64-macos-rustscan
+          changes-file: ""
       - name: Build tar.gz for homebrew installs
         run: |
           tar czf aarch64-macos-rustscan.tar.gz -C target/aarch64-apple-darwin/release rustscan
@@ -197,6 +200,7 @@ jobs:
         with:
           executable-name: rustscan
           archive-name: ${{ matrix.name }}
+          changes-file: ""
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }}
