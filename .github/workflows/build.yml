@@ -48,6 +48,12 @@ jobs:
           args: "--locked --release"
           strip: true
           toolchain: stable
+      - name: Publish artifacts and release
+        if: startsWith(github.event.ref, 'refs/tags/')
+        uses: houseabsolute/actions-rust-release@v0
+        with:
+          executable-name: rustscan
+          archive-name: ${{ matrix.name }}
       - name: Build tar.gz for homebrew installs
         if: matrix.type == 'ubuntu-x64'
         run: |
@@ -101,6 +107,12 @@ jobs:
           args: "--locked --release"
           strip: true
           toolchain: stable
+      - name: Publish artifacts and release
+        if: startsWith(github.event.ref, 'refs/tags/')
+        uses: houseabsolute/actions-rust-release@v0
+        with:
+          executable-name: rustscan
+          archive-name: x86_64-macos-rustscan
       - name: Build tar.gz for homebrew installs
         run: |
           tar czf x86_64-macos-rustscan.tar.gz -C target/x86_64-apple-darwin/release rustscan
@@ -130,6 +142,12 @@ jobs:
           args: "--locked --release"
           strip: true
           toolchain: stable
+      - name: Publish artifacts and release
+        if: startsWith(github.event.ref, 'refs/tags/')
+        uses: houseabsolute/actions-rust-release@v0
+        with:
+          executable-name: rustscan
+          archive-name: aarch64-macos-rustscan
       - name: Build tar.gz for homebrew installs
         run: |
           tar czf aarch64-macos-rustscan.tar.gz -C target/aarch64-apple-darwin/release rustscan
@@ -173,6 +191,12 @@ jobs:
           args: "--locked --release"
           strip: true
           toolchain: stable
+      - name: Publish artifacts and release
+        if: startsWith(github.event.ref, 'refs/tags/')
+        uses: houseabsolute/actions-rust-release@v0
+        with:
+          executable-name: rustscan
+          archive-name: ${{ matrix.name }}
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }}
