@@ -49,26 +49,13 @@ jobs:
           strip: true
           toolchain: stable
       - name: Publish artifacts and release
-        if: startsWith(github.ref, 'refs/tags/')
         uses: houseabsolute/actions-rust-release@v0
         with:
           executable-name: rustscan
           target: ${{ matrix.target }}
           archive-name: ${{ matrix.name }}
           changes-file: ""
-      - name: Build tar.gz for homebrew installs
-        if: matrix.type == 'ubuntu-x64'
-        run: |
-          tar czf ${{ matrix.name }}.tar.gz -C target/x86_64-unknown-linux-musl/release rustscan
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.name }}
-          path: ${{ matrix.path }}
-      - uses: actions/upload-artifact@v4
-        if: matrix.type == 'ubuntu-x64'
-        with:
-          name: ${{ matrix.name }}.tar.gz
-          path: ${{ matrix.name }}.tar.gz
+          release-tag-prefix: ""
   build-deb:
     needs: [build-nix]
     runs-on: ubuntu-latest
@@ -110,25 +97,14 @@ jobs:
           strip: true
           toolchain: stable
       - name: Publish artifacts and release
-        if: startsWith(github.ref, 'refs/tags/')
         uses: houseabsolute/actions-rust-release@v0
         with:
           executable-name: rustscan
           target: x86_64-apple-darwin
           archive-name: x86_64-macos-rustscan
           changes-file: ""
-      - name: Build tar.gz for homebrew installs
-        run: |
-          tar czf x86_64-macos-rustscan.tar.gz -C target/x86_64-apple-darwin/release rustscan
-      - uses: actions/upload-artifact@v4
-        with:
-          name: x86_64-macos-rustscan
-          path: target/x86_64-apple-darwin/release/rustscan
-      - uses: actions/upload-artifact@v4
-        with:
-          name: x86_64-macos-rustscan.tar.gz
-          path: x86_64-macos-rustscan.tar.gz
-  
+          release-tag-prefix: ""
+
   build-macos-aarch64:
     env:
       IN_PIPELINE: true
@@ -147,24 +123,13 @@ jobs:
           strip: true
           toolchain: stable
       - name: Publish artifacts and release
-        if: startsWith(github.ref, 'refs/tags/')
         uses: houseabsolute/actions-rust-release@v0
         with:
           executable-name: rustscan
           target: aarch64-apple-darwin
           archive-name: aarch64-macos-rustscan
           changes-file: ""
-      - name: Build tar.gz for homebrew installs
-        run: |
-          tar czf aarch64-macos-rustscan.tar.gz -C target/aarch64-apple-darwin/release rustscan
-      - uses: actions/upload-artifact@v4
-        with:
-          name: aarch64-macos-rustscan
-          path: target/aarch64-apple-darwin/release/rustscan
-      - uses: actions/upload-artifact@v4
-        with:
-          name: aarch64-macos-rustscan.tar.gz
-          path: aarch64-macos-rustscan.tar.gz
+          release-tag-prefix: ""
 
   build-windows:
     env:
@@ -193,19 +158,15 @@ jobs:
         uses: houseabsolute/actions-rust-cross@v0
         with:
           command: build
-          target:  ${{ matrix.target }}
+          target: ${{ matrix.target }}
           args: "--locked --release"
           strip: true
           toolchain: stable
       - name: Publish artifacts and release
-        if: startsWith(github.ref, 'refs/tags/')
         uses: houseabsolute/actions-rust-release@v0
         with:
           executable-name: rustscan
           target: ${{ matrix.target }}
           archive-name: ${{ matrix.name }}
           changes-file: ""
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.name }}
-          path: ${{ matrix.path }}
+          release-tag-prefix: ""
