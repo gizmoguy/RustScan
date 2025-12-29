@@ -37,11 +37,11 @@ jobs:
             path: target/aarch64-unknown-linux-gnu/release/rustscan
             pkg_config_path: /usr/lib/x86_64-linux-gnu/pkgconfig
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Cache cargo & target directories
         uses: Swatinem/rust-cache@v2
       - name: Build binary
-        uses: houseabsolute/actions-rust-cross@v0
+        uses: houseabsolute/actions-rust-cross@v1
         with:
           command: build
           target: ${{ matrix.target }}
@@ -69,7 +69,7 @@ jobs:
     env:
       IN_PIPELINE: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install cargo-deb
         run: cargo install -f cargo-deb
       - uses: awalsh128/cache-apt-pkgs-action@v1
@@ -81,7 +81,7 @@ jobs:
       - name: Deb Build
         run: cargo deb --target=x86_64-unknown-linux-musl
       - name: Upload Deb Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: rustscan.deb
           path: ./target/x86_64-unknown-linux-musl/debian/*
@@ -98,11 +98,11 @@ jobs:
     runs-on: macos-latest
     if: github.ref == 'refs/heads/master' || github.ref_type == 'tag'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Cache cargo & target directories
         uses: Swatinem/rust-cache@v2
       - name: Build binary
-        uses: houseabsolute/actions-rust-cross@v0
+        uses: houseabsolute/actions-rust-cross@v1
         with:
           command: build
           target: x86_64-apple-darwin
@@ -131,11 +131,11 @@ jobs:
     runs-on: macos-latest
     if: github.ref == 'refs/heads/master' || github.ref_type == 'tag'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Cache cargo & target directories
         uses: Swatinem/rust-cache@v2
       - name: Build binary
-        uses: houseabsolute/actions-rust-cross@v0
+        uses: houseabsolute/actions-rust-cross@v1
         with:
           command: build
           target: aarch64-apple-darwin
@@ -178,11 +178,11 @@ jobs:
             name: x86-windows-rustscan.exe
             path: target\i686-pc-windows-msvc\release\rustscan.exe
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Cache cargo & target directories
         uses: Swatinem/rust-cache@v2
       - name: Build binary
-        uses: houseabsolute/actions-rust-cross@v0
+        uses: houseabsolute/actions-rust-cross@v1
         with:
           command: build
           target: ${{ matrix.target }}
