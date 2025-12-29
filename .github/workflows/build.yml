@@ -169,4 +169,5 @@ jobs:
           target: ${{ matrix.target }}
           archive-name: ${{ matrix.name }}
           changes-file: ""
-          release-tag-prefix: ""
+          release-tag-prefix: "disabled"
+          _force-release-for-testing: true
