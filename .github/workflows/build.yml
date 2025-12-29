@@ -7,7 +7,7 @@ jobs:
     env:
       IN_PIPELINE: true
     runs-on: ${{ matrix.os }}
-    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
+    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag'
     strategy:
       matrix:
         type: [ubuntu-x64, ubuntu-x86, armv7, aarch64]
@@ -48,7 +48,7 @@ jobs:
           args: "--locked --release"
           strip: true
           toolchain: stable
-      - name: Publish artifacts and release
+      - name: Upload artifacts
         uses: houseabsolute/actions-rust-release@v0
         with:
           executable-name: rustscan
@@ -56,7 +56,13 @@ jobs:
           archive-name: ${{ matrix.name }}
           changes-file: ""
           release-tag-prefix: "disabled"
-          _force-release-for-testing: true
+      - name: Publish artifacts to GitHub release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            *.tar.gz
+            *.zip
   build-deb:
     needs: [build-nix]
     runs-on: ubuntu-latest
@@ -84,7 +90,7 @@ jobs:
     env:
       IN_PIPELINE: true
     runs-on: macos-latest
-    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
+    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag'
     steps:
       - uses: actions/checkout@v4
       - name: Cache cargo & target directories
@@ -97,21 +103,27 @@ jobs:
           args: "--locked --release"
           strip: true
           toolchain: stable
-      - name: Publish artifacts and release
+      - name: Upload artifacts
         uses: houseabsolute/actions-rust-release@v0
         with:
           executable-name: rustscan
-          target: x86_64-apple-darwin
-          archive-name: x86_64-macos-rustscan
+          target: ${{ matrix.target }}
+          archive-name: ${{ matrix.name }}
           changes-file: ""
           release-tag-prefix: "disabled"
-          _force-release-for-testing: true
+      - name: Publish artifacts to GitHub release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            *.tar.gz
+            *.zip
 
   build-macos-aarch64:
     env:
       IN_PIPELINE: true
     runs-on: macos-latest
-    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
+    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag'
     steps:
       - uses: actions/checkout@v4
       - name: Cache cargo & target directories
@@ -124,21 +136,27 @@ jobs:
           args: "--locked --release"
           strip: true
           toolchain: stable
-      - name: Publish artifacts and release
+      - name: Upload artifacts
         uses: houseabsolute/actions-rust-release@v0
         with:
           executable-name: rustscan
-          target: aarch64-apple-darwin
-          archive-name: aarch64-macos-rustscan
+          target: ${{ matrix.target }}
+          archive-name: ${{ matrix.name }}
           changes-file: ""
           release-tag-prefix: "disabled"
-          _force-release-for-testing: true
+      - name: Publish artifacts to GitHub release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            *.tar.gz
+            *.zip
 
   build-windows:
     env:
       IN_PIPELINE: true
     runs-on: ${{ matrix.os }}
-    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
+    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag'
     strategy:
       matrix:
         type: [windows-x64, windows-x86]
@@ -165,7 +183,7 @@ jobs:
           args: "--locked --release"
           strip: true
           toolchain: stable
-      - name: Publish artifacts and release
+      - name: Upload artifacts
         uses: houseabsolute/actions-rust-release@v0
         with:
           executable-name: rustscan
@@ -173,4 +191,10 @@ jobs:
           archive-name: ${{ matrix.name }}
           changes-file: ""
           release-tag-prefix: "disabled"
-          _force-release-for-testing: true
+      - name: Publish artifacts to GitHub release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            *.tar.gz
+            *.zip
