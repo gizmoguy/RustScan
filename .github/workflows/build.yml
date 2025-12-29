@@ -107,8 +107,8 @@ jobs:
         uses: houseabsolute/actions-rust-release@v0
         with:
           executable-name: rustscan
-          target: ${{ matrix.target }}
-          archive-name: ${{ matrix.name }}
+          target: x86_64-apple-darwin
+          archive-name: x86_64-macos-rustscan
           changes-file: ""
           release-tag-prefix: "disabled"
       - name: Publish artifacts to GitHub release
@@ -140,8 +140,8 @@ jobs:
         uses: houseabsolute/actions-rust-release@v0
         with:
           executable-name: rustscan
-          target: ${{ matrix.target }}
-          archive-name: ${{ matrix.name }}
+          target: aarch64-apple-darwin
+          archive-name: aarch64-macos-rustscan
           changes-file: ""
           release-tag-prefix: "disabled"
       - name: Publish artifacts to GitHub release
