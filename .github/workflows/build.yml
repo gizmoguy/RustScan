@@ -55,7 +55,8 @@ jobs:
           target: ${{ matrix.target }}
           archive-name: ${{ matrix.name }}
           changes-file: ""
-          release-tag-prefix: ""
+          release-tag-prefix: "disabled"
+          _force-release-for-testing: true
   build-deb:
     needs: [build-nix]
     runs-on: ubuntu-latest
@@ -103,7 +104,8 @@ jobs:
           target: x86_64-apple-darwin
           archive-name: x86_64-macos-rustscan
           changes-file: ""
-          release-tag-prefix: ""
+          release-tag-prefix: "disabled"
+          _force-release-for-testing: true
 
   build-macos-aarch64:
     env:
@@ -129,7 +131,8 @@ jobs:
           target: aarch64-apple-darwin
           archive-name: aarch64-macos-rustscan
           changes-file: ""
-          release-tag-prefix: ""
+          release-tag-prefix: "disabled"
+          _force-release-for-testing: true
 
   build-windows:
     env:
