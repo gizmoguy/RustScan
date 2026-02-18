@@ -1,13 +1,16 @@
 name: CD Pipeline
 
-on: [push]
+on:
+  push:
+    branches:
+      - "master"
+    tags:
 
 jobs:
   build-nix:
     env:
       IN_PIPELINE: true
     runs-on: ${{ matrix.os }}
-    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag'
     strategy:
       matrix:
         type: [ubuntu-x64, ubuntu-x86, armv7, aarch64]
@@ -56,13 +59,7 @@ jobs:
           archive-name: ${{ matrix.name }}
           changes-file: ""
           release-tag-prefix: "disabled"
-      - name: Publish artifacts to GitHub release
-        if: github.ref_type == 'tag'
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            *.tar.gz
-            *.zip
+
   build-deb:
     needs: [build-nix]
     runs-on: ubuntu-latest
@@ -85,18 +82,11 @@ jobs:
         with:
           name: rustscan.deb
           path: ./target/x86_64-unknown-linux-musl/debian/*
-      - name: Publish artifacts to GitHub release
-        if: github.ref_type == 'tag'
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            ./target/x86_64-unknown-linux-musl/debian/*.deb
 
   build-macos:
     env:
       IN_PIPELINE: true
     runs-on: macos-latest
-    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag'
     steps:
       - uses: actions/checkout@v6
       - name: Cache cargo & target directories
@@ -117,19 +107,11 @@ jobs:
           archive-name: x86_64-macos-rustscan
           changes-file: ""
           release-tag-prefix: "disabled"
-      - name: Publish artifacts to GitHub release
-        if: github.ref_type == 'tag'
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            *.tar.gz
-            *.zip
 
   build-macos-aarch64:
     env:
       IN_PIPELINE: true
     runs-on: macos-latest
-    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag'
     steps:
       - uses: actions/checkout@v6
       - name: Cache cargo & target directories
@@ -150,19 +132,11 @@ jobs:
           archive-name: aarch64-macos-rustscan
           changes-file: ""
           release-tag-prefix: "disabled"
-      - name: Publish artifacts to GitHub release
-        if: github.ref_type == 'tag'
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            *.tar.gz
-            *.zip
 
   build-windows:
     env:
       IN_PIPELINE: true
     runs-on: ${{ matrix.os }}
-    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag'
     strategy:
       matrix:
         type: [windows-x64, windows-x86]
@@ -170,13 +144,11 @@ jobs:
           - type: windows-x64
             os: windows-latest
             target: x86_64-pc-windows-msvc
-            name: x86_64-windows-rustscan.exe
-            path: target\x86_64-pc-windows-msvc\release\rustscan.exe
+            name: x86_64-windows-rustscan
           - type: windows-x86
             os: windows-latest
             target: i686-pc-windows-msvc
-            name: x86-windows-rustscan.exe
-            path: target\i686-pc-windows-msvc\release\rustscan.exe
+            name: x86-windows-rustscan
     steps:
       - uses: actions/checkout@v6
       - name: Cache cargo & target directories
@@ -197,10 +169,30 @@ jobs:
           archive-name: ${{ matrix.name }}
           changes-file: ""
           release-tag-prefix: "disabled"
-      - name: Publish artifacts to GitHub release
-        if: github.ref_type == 'tag'
-        uses: softprops/action-gh-release@v2
+
+  publish:
+    if: github.ref_type == 'tag'
+    needs:
+      - build-nix
+      - build-deb
+      - build-macos
+      - build-macos-aarch64
+      - build-windows
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v5
         with:
-          files: |
-            *.tar.gz
-            *.zip
+          merge-multiple: true
+      - name: Display structure of downloaded files
+        run: ls -R path/to/artifacts
+# - name: Publish artifacts to GitHub release
+#   if: github.ref_type == 'tag'
+#   uses: softprops/action-gh-release@v2
+#   with:
+#     files: |
+#       *.tar.gz
+#       *.zip
+#       ./target/x86_64-unknown-linux-musl/debian/*.deb
