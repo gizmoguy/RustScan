@@ -188,7 +188,7 @@ jobs:
         with:
           merge-multiple: true
       - name: Display structure of downloaded files
-        run: ls -R path/to/artifacts
+        run: ls -R .
 # - name: Publish artifacts to GitHub release
 #   if: github.ref_type == 'tag'
 #   uses: softprops/action-gh-release@v2
